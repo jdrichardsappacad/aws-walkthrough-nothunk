@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { createUser } from "../store/session";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from 'react';
+import { createUser } from '../store/session';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CreateUser = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [image, setImage] = useState(null);
   // for multuple file upload
   //   const [images, setImages] = useState([]);
@@ -17,11 +17,11 @@ const CreateUser = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     let newErrors = [];
-    dispatch(createUser({ username, email, password, image }))
+    createUser(dispatch, { username, email, password, image })
       .then(() => {
-        setUsername("");
-        setEmail("");
-        setPassword("");
+        setUsername('');
+        setEmail('');
+        setPassword('');
         setImage(null);
       })
       .catch(async (res) => {
@@ -50,35 +50,35 @@ const CreateUser = () => {
       {errors.length > 0 &&
         errors.map((error) => <div key={error}>{error}</div>)}
       <form
-        style={{ display: "flex", flexFlow: "column" }}
+        style={{ display: 'flex', flexFlow: 'column' }}
         onSubmit={handleSubmit}
       >
         <label>
           <input
-            type="text"
-            placeholder="Username"
+            type='text'
+            placeholder='Username'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
         </label>
         <label>
           <input
-            type="email"
-            placeholder="Email"
+            type='email'
+            placeholder='Email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </label>
         <label>
           <input
-            type="password"
-            placeholder="Password"
+            type='password'
+            placeholder='Password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
         <label>
-          <input type="file" onChange={updateFile} />
+          <input type='file' onChange={updateFile} />
         </label>
         {/* <label>
             Multiple Upload
@@ -87,16 +87,16 @@ const CreateUser = () => {
               multiple
               onChange={updateFiles} />
           </label> */}
-        <button type="submit">Create User</button>
+        <button type='submit'>Create User</button>
       </form>
       <div>
         {user && (
           <div>
             <h1>{user.username}</h1>
             <img
-              style={{ width: "150px" }}
+              style={{ width: '150px' }}
               src={user.profileImageUrl}
-              alt="profile"
+              alt='profile'
             />
           </div>
         )}

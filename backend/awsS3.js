@@ -1,28 +1,28 @@
-const AWS = require("aws-sdk");
+const AWS = require('aws-sdk');
 // name of your bucket here
-const NAME_OF_BUCKET = "aws-s3-pern-demo";
+const NAME_OF_BUCKET = 'auth-me-bucket';
 
-const multer = require("multer");
+const multer = require('multer');
 
 //  make sure to set environment variables in production for:
 //  AWS_ACCESS_KEY_ID
 //  AWS_SECRET_ACCESS_KEY
 //  and aws will automatically use those environment variables
 
-const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
+const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
 
 // --------------------------- Public UPLOAD ------------------------
 
 const singlePublicFileUpload = async (file) => {
   const { originalname, mimetype, buffer } = await file;
-  const path = require("path");
+  const path = require('path');
   // name of the file in your S3 bucket will be the date in ms plus the extension name
   const Key = new Date().getTime().toString() + path.extname(originalname);
   const uploadParams = {
     Bucket: NAME_OF_BUCKET,
     Key,
     Body: buffer,
-    ACL: "public-read",
+    ACL: 'public-read'
   };
   const result = await s3.upload(uploadParams).promise();
 
@@ -42,13 +42,13 @@ const multiplePublicFileUpload = async (files) => {
 
 const singlePrivateFileUpload = async (file) => {
   const { originalname, mimetype, buffer } = await file;
-  const path = require("path");
+  const path = require('path');
   // name of the file in your S3 bucket will be the date in ms plus the extension name
   const Key = new Date().getTime().toString() + path.extname(originalname);
   const uploadParams = {
     Bucket: NAME_OF_BUCKET,
     Key,
-    Body: buffer,
+    Body: buffer
   };
   const result = await s3.upload(uploadParams).promise();
 
@@ -67,9 +67,9 @@ const multiplePrivateFileUpload = async (files) => {
 const retrievePrivateFile = (key) => {
   let fileUrl;
   if (key) {
-    fileUrl = s3.getSignedUrl("getObject", {
+    fileUrl = s3.getSignedUrl('getObject', {
       Bucket: NAME_OF_BUCKET,
-      Key: key,
+      Key: key
     });
   }
   return fileUrl || key;
@@ -79,8 +79,8 @@ const retrievePrivateFile = (key) => {
 
 const storage = multer.memoryStorage({
   destination: function (req, file, callback) {
-    callback(null, "");
-  },
+    callback(null, '');
+  }
 });
 
 const singleMulterUpload = (nameOfKey) =>
@@ -96,5 +96,5 @@ module.exports = {
   multiplePrivateFileUpload,
   retrievePrivateFile,
   singleMulterUpload,
-  multipleMulterUpload,
+  multipleMulterUpload
 };

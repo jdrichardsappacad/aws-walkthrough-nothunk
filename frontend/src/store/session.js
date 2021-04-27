@@ -1,68 +1,70 @@
-import { csrfFetch } from "../util/csrf.js";
+import { csrfFetch } from '../util/csrf.js';
 
-const SET_USER = "session/setUser";
-const REMOVE_USER = "session/removeUser";
+const SET_USER = 'session/setUser';
+const REMOVE_USER = 'session/removeUser';
 
 const setUser = (user) => ({
   type: SET_USER,
-  payload: user,
+  payload: user
 });
 
 const removeUser = () => ({
-  type: REMOVE_USER,
+  type: REMOVE_USER
 });
 
-export const login = ({ credential, password }) => async (dispatch) => {
-  const res = await csrfFetch("/api/session", {
-    method: "POST",
-    body: JSON.stringify({ credential, password }),
+export const login = (dispatch, { credential, password }) => async (
+  dispatch
+) => {
+  const res = await csrfFetch('/api/session', {
+    method: 'POST',
+    body: JSON.stringify({ credential, password })
   });
   const data = await res.json();
   dispatch(setUser(data.user));
 };
 
-export const restoreUser = () => async (dispatch) => {
-  const res = await csrfFetch("/api/session");
+export const restoreUser = async (dispatch) => {
+  const res = await csrfFetch('/api/session');
   const data = await res.json();
-  dispatch(setUser(data.user));
+  setUser(dispatch, data.user);
 };
 
-export const createUser = (user) => async (dispatch) => {
+export const createUser = async (dispatch, user) => {
   const { images, image, username, email, password } = user;
   const formData = new FormData();
-  formData.append("username", username);
-  formData.append("email", email);
-  formData.append("password", password);
+  formData.append('username', username);
+  formData.append('email', email);
+  formData.append('password', password);
 
   // for multiple files
   if (images && images.length !== 0) {
     for (var i = 0; i < images.length; i++) {
-      formData.append("images", images[i]);
+      formData.append('images', images[i]);
     }
   }
 
   // for single file
-  if (image) formData.append("image", image);
+  if (image) formData.append('image', image);
 
   const res = await csrfFetch(`/api/users/`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "multipart/form-data",
+      'Content-Type': 'multipart/form-data'
     },
-    body: formData,
+    body: formData
   });
-  
+
   const data = await res.json();
   dispatch(setUser(data.user));
 };
 
-export const logout = () => async (dispatch) => {
-  const res = await csrfFetch("/api/session", {
-    method: "DELETE",
+export const logout = async (dispatch) => {
+  const res = await csrfFetch('/api/session', {
+    method: 'DELETE'
   });
-  
+
   const data = await res.json();
-  if (data.message === "success") {
+  if (data.message === 'success') {
     dispatch(removeUser());
   }
 };
