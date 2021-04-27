@@ -13,6 +13,7 @@ const CreateUser = () => {
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
+  console.log('user', user);
 
   const handleSubmit = (e) => {
     e.preventDefault();

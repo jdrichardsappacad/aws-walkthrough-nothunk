@@ -1,14 +1,14 @@
-import { csrfFetch } from "../util/csrf.js";
+import { csrfFetch } from '../util/csrf.js';
 
-const GET_USERS = "users/get_users";
+const GET_USERS = 'users/get_users';
 
 const getUsers = (users) => ({
   type: GET_USERS,
-  payload: users,
+  payload: users
 });
 
-export const getAllUsers = () => async (dispatch) => {
-  const res = await csrfFetch("/api/users");
+export const getAllUsers = async (dispatch) => {
+  const res = await csrfFetch('/api/users');
   const data = await res.json();
   dispatch(getUsers(data));
 };

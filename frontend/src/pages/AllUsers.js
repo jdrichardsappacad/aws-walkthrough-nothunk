@@ -6,6 +6,7 @@ import { getAllUsers } from '../store/users';
 const AllUsers = () => {
   const dispatch = useDispatch();
   const users = useSelector((state) => Object.values(state.users));
+  console.log('users', users);
   useEffect(() => {
     getAllUsers(dispatch);
   }, []);
