@@ -224,7 +224,7 @@ if (options.method.toUpperCase() !== 'GET') {
 }
 ```
 
-In the [`session.js`](https://github.com/jdrichardsappacad/aws-walkthrough-nothunk/blob/master/frontend/src/store/session.js) file, you will be defining your `createUser` thunk which accepts an object of key value pairs and turns them into `FormData` entries to send with your request.
+In the [`session.js`](https://github.com/jdrichardsappacad/aws-walkthrough-nothunk/blob/master/frontend/src/store/session.js) file, you will be defining your `createUser` function which accepts a dispatch and an object of key value pairs that are turned into `FormData` entries to send with your request.
 
 ```javascript
 // user_actions.js
@@ -235,7 +235,7 @@ const setUser = (user) => ({
   payload: user
 });
 
-export const createUser = (user) => async (dispatch) => {
+export const createUser = async (dispatch, user) => {
   const { images, image, username, email, password } = user;
   const formData = new FormData();
   formData.append('username', username);
