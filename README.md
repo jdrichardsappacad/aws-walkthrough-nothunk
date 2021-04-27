@@ -50,7 +50,7 @@ After you create the user, you will get the `Access Key ID` and the `Secret Acce
 In your app.js import the body-parser you module you installed in your backend node_modules.
 
 ```javascript
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 ```
 
 Change the line of code that says `app.use(express.json())` to the following:
@@ -64,10 +64,10 @@ You can learn more about the body parser module here: [body-parser](https://www.
 
 ## Set up AWS S3 in your backend
 
-### [`awsS3.js`](https://github.com/jamesurobertson/aws-s3-pern-demo/blob/master/backend/awsS3.js)
+### [`awsS3.js`](https://github.com/jdrichardsappacad/aws-walkthrough-nothunk/blob/master/backend/awsS3.js)
 
-Make a file called `awsS3.js` at the root of your backend directory. [Link to file](https://github.com/jamesurobertson/aws-s3-pern-demo/blob/master/backend/awsS3.js)
-Copy the contents of [this file](https://github.com/jamesurobertson/aws-s3-pern-demo/blob/master/backend/awsS3.js) into the file you just created.
+Make a file called `awsS3.js` at the root of your backend directory. [Link to file](https://github.com/jdrichardsappacad/aws-walkthrough-nothunk/blob/master/backend/awsS3.js)
+Copy the contents of [this file](https://github.com/jdrichardsappacad/aws-walkthrough-nothunk/blob/master/backend/awsS3.js) into the file you just created.
 
 **Rename the `NAME_OF_BUCKET` constant at the top of the `awsS3.js` file to match the name of your bucket.**
 
@@ -104,14 +104,14 @@ Take a look at the function `singlePublicFileUpload` in the your `awsS3.js`. It 
 ```javascript
 const singlePublicFileUpload = async (file) => {
   const { originalname, mimetype, buffer } = await file;
-  const path = require("path");
+  const path = require('path');
   // name of the file in your S3 bucket will be the date in ms plus the extension name
   const Key = new Date().getTime().toString() + path.extname(originalname);
   const uploadParams = {
     Bucket: NAME_OF_BUCKET,
     Key,
     Body: buffer,
-    ACL: "public-read",
+    ACL: 'public-read'
   };
   const result = await s3.upload(uploadParams).promise();
 
@@ -132,15 +132,15 @@ S3 sends back data on the saved file which is saved to the variable `result`.
 
 You will be saving this url link that S3 generates for us to your database which can be extracted from `result.Location`
 
-Now all you need is the file to pass into the `singlePublicFileUpload` function. In this walkthrough you are going to be importing it to one of your routes - [Users Routes](https://github.com/jamesurobertson/aws-s3-pern-demo/blob/master/backend/routes/api/users.js). But you can use the same logic in any route you'd like.
+Now all you need is the file to pass into the `singlePublicFileUpload` function. In this walkthrough you are going to be importing it to one of your routes - [Users Routes](https://github.com/jdrichardsappacad/aws-walkthrough-nothunk/blob/master/backend/routes/api/users.js). But you can use the same logic in any route you'd like.
 
 In this file, you need to import the `singlePublicFileUpload` function as well as the `singleMulterUpload` middleware from the `awsS3.js` file.
 
 ```javascript
 // Post /api/users ---Sign up
 router.post(
-  "/",
-  singleMulterUpload("image"),
+  '/',
+  singleMulterUpload('image'),
   validateSignup,
   asyncHandler(async (req, res) => {
     const { email, password, username } = req.body;
@@ -149,13 +149,13 @@ router.post(
       username,
       email,
       password,
-      profileImageUrl,
+      profileImageUrl
     });
 
     setTokenCookie(res, user);
 
     return res.json({
-      user,
+      user
     });
   })
 );
@@ -165,8 +165,8 @@ router.post(
 // in awsS3.js
 const storage = multer.memoryStorage({
   destination: function (req, file, callback) {
-    callback(null, "");
-  },
+    callback(null, '');
+  }
 });
 
 // in awsS3.js
@@ -197,15 +197,15 @@ All you need to read the files on your frontend is the url path to the file that
 
 ### Multiple Files Backend
 
-Take a look at the `multiplePublicFileUpload`, and `multipleMulterUpload` functions in the following file, [`awsS3.js`](https://github.com/jamesurobertson/aws-s3-pern-demo/blob/master/backend/awsS3.js). These functions are used in the same way as the single file upload functions above.
+Take a look at the `multiplePublicFileUpload`, and `multipleMulterUpload` functions in the following file, [`awsS3.js`](https://github.com/jdrichardsappacad/aws-walkthrough-nothunk/blob/master/backend/awsS3.js). These functions are used in the same way as the single file upload functions above.
 
 ## File Upload on the Frontend
 
 You will be using fetch for this example. To send files, the Content-Type Header must be `"multipart/form-data"`. In your custom fetch function, `csrfFetch`, in the csrf.js file you have these lines of code:
 
 ```javascript
-options.headers["Content-Type"] =
-  options.headers["Content-Type"] || "application/json";
+options.headers['Content-Type'] =
+  options.headers['Content-Type'] || 'application/json';
 ```
 
 By adding formData to the body of your request, the browser will automatically set the appropriate headers and boundaries so you need to remove the `Content-Type` header if it is multipart/form-data.
@@ -213,51 +213,51 @@ By adding formData to the body of your request, the browser will automatically s
 The entire if statement should now look like this:
 
 ```javascript
-if (options.method.toUpperCase() !== "GET") {
-  if (options.headers["Content-Type"] === "multipart/form-data") {
-    delete options.headers["Content-Type"];
+if (options.method.toUpperCase() !== 'GET') {
+  if (options.headers['Content-Type'] === 'multipart/form-data') {
+    delete options.headers['Content-Type'];
   } else {
-    options.headers["Content-Type"] =
-      options.headers["Content-Type"] || "application/json";
+    options.headers['Content-Type'] =
+      options.headers['Content-Type'] || 'application/json';
   }
-  options.headers["XSRF-Token"] = Cookies.get("XSRF-TOKEN");
+  options.headers['XSRF-Token'] = Cookies.get('XSRF-TOKEN');
 }
 ```
 
-In the [`session.js`](https://github.com/jamesurobertson/aws-s3-pern-demo/blob/master/frontend/src/store/session.js) file, you will be defining your `createUser` thunk which accepts an object of key value pairs and turns them into `FormData` entries to send with your request.
+In the [`session.js`](https://github.com/jdrichardsappacad/aws-walkthrough-nothunk/blob/master/frontend/src/store/session.js) file, you will be defining your `createUser` thunk which accepts an object of key value pairs and turns them into `FormData` entries to send with your request.
 
 ```javascript
 // user_actions.js
-const SET_USER = "session/setUser";
+const SET_USER = 'session/setUser';
 
 const setUser = (user) => ({
   type: SET_USER,
-  payload: user,
+  payload: user
 });
 
 export const createUser = (user) => async (dispatch) => {
   const { images, image, username, email, password } = user;
   const formData = new FormData();
-  formData.append("username", username);
-  formData.append("email", email);
-  formData.append("password", password);
+  formData.append('username', username);
+  formData.append('email', email);
+  formData.append('password', password);
 
   // for multiple files
   if (images && images.length !== 0) {
     for (var i = 0; i < images.length; i++) {
-      formData.append("images", images[i]);
+      formData.append('images', images[i]);
     }
   }
 
   // for single file
-  if (image) formData.append("image", image);
+  if (image) formData.append('image', image);
 
   const res = await csrfFetch(`/api/users/`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "multipart/form-data",
+      'Content-Type': 'multipart/form-data'
     },
-    body: formData,
+    body: formData
   });
 
   const data = await res.json();
@@ -273,18 +273,18 @@ switch (action.type) {
       return { ...state, user: action.payload };
 ```
 
-The form itself should look just like a regular React form. Take a look at this form for an example: [CreateUser](https://github.com/jamesurobertson/aws-s3-pern-demo/blob/master/frontend/src/pages/CreateUser.js)
+The form itself should look just like a regular React form. Take a look at this form for an example: [CreateUser](https://github.com/jdrichardsappacad/aws-walkthrough-nothunk/blob/master/frontend/src/pages/CreateUser.js)
 
 ```javascript
 // CreateUser.js file
-import { useState } from "react";
-import { createUser } from "../store/session";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from 'react';
+import { createUser } from '../store/session';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CreateUser = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [image, setImage] = useState(null);
   // for multuple file upload
   //   const [images, setImages] = useState([]);
@@ -298,9 +298,9 @@ const CreateUser = () => {
     let newErrors = [];
     dispatch(createUser({ username, email, password, image }))
       .then(() => {
-        setUsername("");
-        setEmail("");
-        setPassword("");
+        setUsername('');
+        setEmail('');
+        setPassword('');
         setImage(null);
       })
       .catch(async (res) => {
@@ -329,35 +329,35 @@ const CreateUser = () => {
       {errors.length > 0 &&
         errors.map((error) => <div key={error}>{error}</div>)}
       <form
-        style={{ display: "flex", flexFlow: "column" }}
+        style={{ display: 'flex', flexFlow: 'column' }}
         onSubmit={handleSubmit}
       >
         <label>
           <input
-            type="text"
-            placeholder="Username"
+            type='text'
+            placeholder='Username'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
         </label>
         <label>
           <input
-            type="email"
-            placeholder="Email"
+            type='email'
+            placeholder='Email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </label>
         <label>
           <input
-            type="password"
-            placeholder="Password"
+            type='password'
+            placeholder='Password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
         <label>
-          <input type="file" onChange={updateFile} />
+          <input type='file' onChange={updateFile} />
         </label>
         {/* <label>
             Multiple Upload
@@ -366,16 +366,16 @@ const CreateUser = () => {
               multiple
               onChange={updateFiles} />
           </label> */}
-        <button type="submit">Create User</button>
+        <button type='submit'>Create User</button>
       </form>
       <div>
         {user && (
           <div>
             <h1>{user.username}</h1>
             <img
-              style={{ width: "150px" }}
+              style={{ width: '150px' }}
               src={user.profileImageUrl}
-              alt="profile"
+              alt='profile'
             />
           </div>
         )}
