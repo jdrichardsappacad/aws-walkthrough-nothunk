@@ -296,7 +296,7 @@ const CreateUser = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     let newErrors = [];
-    dispatch(createUser({ username, email, password, image }))
+    dispatch(createUser(dispatch, { username, email, password, image }))
       .then(() => {
         setUsername('');
         setEmail('');
