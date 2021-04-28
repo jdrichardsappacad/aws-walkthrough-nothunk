@@ -1,4 +1,4 @@
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import { createStore, combineReducers, compose } from 'redux';
 
 import session from './session';
 import users from './users';
@@ -8,10 +8,8 @@ const rootReducer = combineReducers({
   users
 });
 
-let enhancer;
-
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-enhancer = composeEnhancers(applyMiddleware(thunk));
+const enhancer = composeEnhancers();
 
 const configureStore = (preloadedState) => {
   return createStore(rootReducer, preloadedState, enhancer);

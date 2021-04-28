@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllUsers } from '../store/users';
@@ -9,7 +8,7 @@ const AllUsers = () => {
   console.log('users', users);
   useEffect(() => {
     getAllUsers(dispatch);
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className='allusers-container'>
